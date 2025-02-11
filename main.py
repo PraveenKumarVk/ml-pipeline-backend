@@ -13,6 +13,14 @@ from sklearn.metrics import accuracy_score, f1_score
 
 app = FastAPI()
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (or specify frontend domain)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 # Database setup (SQLite for simplicity)
 DATABASE_URL = "sqlite:///./pipelines.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
@@ -34,6 +42,10 @@ class Pipeline(Base):
 
 Base.metadata.create_all(bind=engine)
 
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI is working with CORS!"}
 
 # ------------------- Data Upload -------------------
 @app.post("/upload-data/")
